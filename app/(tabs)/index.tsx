@@ -6,18 +6,21 @@ import {
   FlatList,
   ActivityIndicator,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useLinks } from '@/hooks/useLinks';
 import SwipeableCard from '@/components/SwipeableCard';
 import LinkCard from '@/components/LinkCard';
 import MemoModal from '@/components/MemoModal';
+import AddLinkModal from '@/components/AddLinkModal';
 import { Link } from '@/types';
 
 export default function FeedScreen() {
   const { links, isLoading, error, loadLinks, archiveLink, updateLink } = useLinks();
   const [selectedLink, setSelectedLink] = useState<Link | null>(null);
   const [isMemoModalVisible, setIsMemoModalVisible] = useState(false);
+  const [isAddLinkModalVisible, setIsAddLinkModalVisible] = useState(false);
 
   const handleSwipeLeft = useCallback((linkId: string) => {
     archiveLink(linkId);
@@ -99,6 +102,19 @@ export default function FeedScreen() {
         onSave={handleSaveMemo}
       />
 
+      <AddLinkModal
+        visible={isAddLinkModalVisible}
+        onClose={() => setIsAddLinkModalVisible(false)}
+        onSuccess={loadLinks}
+      />
+
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => setIsAddLinkModalVisible(true)}
+      >
+        <Text style={styles.fabText}>+</Text>
+      </TouchableOpacity>
+
       <StatusBar style="auto" />
     </View>
   );
@@ -169,5 +185,26 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     textAlign: 'center',
     lineHeight: 20,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#6366f1',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  fabText: {
+    fontSize: 32,
+    color: '#ffffff',
+    fontWeight: '300',
   },
 });
