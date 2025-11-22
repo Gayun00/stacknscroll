@@ -20,7 +20,11 @@ export default function FeedScreen() {
   const [isMemoModalVisible, setIsMemoModalVisible] = useState(false);
   const [isAddLinkModalVisible, setIsAddLinkModalVisible] = useState(false);
 
-  const handleOpenMemo = useCallback((link: Link) => {
+  const handleSwipeLeft = useCallback((linkId: string) => {
+    archiveLink(linkId);
+  }, [archiveLink]);
+
+  const handleSwipeRight = useCallback((link: Link) => {
     setSelectedLink(link);
     setIsMemoModalVisible(true);
   }, []);
@@ -32,10 +36,12 @@ export default function FeedScreen() {
   }, [selectedLink, updateLink]);
 
   const renderItem = useCallback(({ item }: { item: Link }) => (
-    <TouchableOpacity onPress={() => handleOpenMemo(item)}>
-      <LinkCard link={item} />
-    </TouchableOpacity>
-  ), [handleOpenMemo]);
+    <LinkCard
+      link={item}
+      onMemo={() => handleSwipeRight(item)}
+      onArchive={() => handleSwipeLeft(item.id)}
+    />
+  ), [handleSwipeLeft, handleSwipeRight]);
 
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>

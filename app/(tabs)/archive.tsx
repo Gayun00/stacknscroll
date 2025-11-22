@@ -5,7 +5,6 @@ import {
   StyleSheet,
   FlatList,
   RefreshControl,
-  TouchableOpacity,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useLinks } from '@/hooks/useLinks';
@@ -34,15 +33,11 @@ export default function ArchiveScreen() {
   }, [selectedLink, updateLink]);
 
   const renderItem = useCallback(({ item }: { item: Link }) => (
-    <View style={styles.cardContainer}>
-      <LinkCard link={item} onPress={() => handleOpenMemo(item)} />
-      <TouchableOpacity
-        style={styles.unarchiveButton}
-        onPress={() => handleUnarchive(item.id)}
-      >
-        <Text style={styles.unarchiveButtonText}>복원</Text>
-      </TouchableOpacity>
-    </View>
+    <LinkCard
+      link={item}
+      onMemo={() => handleOpenMemo(item)}
+      onUnarchive={() => handleUnarchive(item.id)}
+    />
   ), [handleUnarchive, handleOpenMemo]);
 
   const renderEmpty = () => (
@@ -121,28 +116,6 @@ const styles = StyleSheet.create({
   listContent: {
     paddingVertical: 8,
     flexGrow: 1,
-  },
-  cardContainer: {
-    position: 'relative',
-  },
-  unarchiveButton: {
-    position: 'absolute',
-    top: 16,
-    right: 24,
-    backgroundColor: '#10b981',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  unarchiveButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
   },
   emptyContainer: {
     flex: 1,

@@ -4,9 +4,12 @@ import { Link } from '@/types';
 interface LinkCardProps {
   link: Link;
   onPress?: () => void;
+  onMemo?: () => void;
+  onArchive?: () => void;
+  onUnarchive?: () => void;
 }
 
-export default function LinkCard({ link, onPress }: LinkCardProps) {
+export default function LinkCard({ link, onPress, onMemo, onArchive, onUnarchive }: LinkCardProps) {
   const handlePress = () => {
     if (onPress) {
       onPress();
@@ -59,6 +62,56 @@ export default function LinkCard({ link, onPress }: LinkCardProps) {
                 <Text style={styles.tagText}>#{tag}</Text>
               </View>
             ))}
+          </View>
+        )}
+
+        {(onMemo || onArchive || onUnarchive) && (
+          <View style={styles.buttonRow}>
+            {onMemo && (
+              <Pressable
+                onPress={(e) => {
+                  e.stopPropagation();
+                  onMemo();
+                }}
+                style={({ pressed }) => [
+                  styles.button,
+                  styles.memoButton,
+                  pressed && styles.buttonPressed,
+                ]}
+              >
+                <Text style={styles.memoButtonText}>메모</Text>
+              </Pressable>
+            )}
+            {onArchive && (
+              <Pressable
+                onPress={(e) => {
+                  e.stopPropagation();
+                  onArchive();
+                }}
+                style={({ pressed }) => [
+                  styles.button,
+                  styles.archiveButton,
+                  pressed && styles.buttonPressed,
+                ]}
+              >
+                <Text style={styles.archiveButtonText}>아카이브</Text>
+              </Pressable>
+            )}
+            {onUnarchive && (
+              <Pressable
+                onPress={(e) => {
+                  e.stopPropagation();
+                  onUnarchive();
+                }}
+                style={({ pressed }) => [
+                  styles.button,
+                  styles.unarchiveButton,
+                  pressed && styles.buttonPressed,
+                ]}
+              >
+                <Text style={styles.unarchiveButtonText}>복원</Text>
+              </Pressable>
+            )}
           </View>
         )}
       </View>
@@ -135,5 +188,54 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#4f46e5',
     fontWeight: '500',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#f3f4f6',
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonPressed: {
+    opacity: 0.7,
+  },
+  memoButton: {
+    backgroundColor: '#f0fdf4',
+    borderWidth: 1,
+    borderColor: '#10b981',
+  },
+  memoButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#059669',
+  },
+  archiveButton: {
+    backgroundColor: '#fef2f2',
+    borderWidth: 1,
+    borderColor: '#ef4444',
+  },
+  archiveButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#dc2626',
+  },
+  unarchiveButton: {
+    backgroundColor: '#eff6ff',
+    borderWidth: 1,
+    borderColor: '#3b82f6',
+  },
+  unarchiveButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2563eb',
   },
 });
