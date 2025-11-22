@@ -7,7 +7,9 @@ export default {
     version: '0.1.0',
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
+    icon: './assets/icon.png',
     splash: {
+      image: './assets/splash.png',
       backgroundColor: '#6366f1',
       resizeMode: 'contain',
     },
@@ -19,11 +21,8 @@ export default {
     android: {
       package: 'com.stacknscroll.app',
       adaptiveIcon: {
+        foregroundImage: './assets/icon.png',
         backgroundColor: '#6366f1',
-      },
-      splash: {
-        backgroundColor: '#6366f1',
-        resizeMode: 'contain',
       },
     },
     web: {
