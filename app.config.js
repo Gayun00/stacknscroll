@@ -9,6 +9,7 @@ export default {
     userInterfaceStyle: 'automatic',
     splash: {
       backgroundColor: '#6366f1',
+      resizeMode: 'contain',
     },
     assetBundlePatterns: ['**/*'],
     ios: {
@@ -17,6 +18,13 @@ export default {
     },
     android: {
       package: 'com.stacknscroll.app',
+      adaptiveIcon: {
+        backgroundColor: '#6366f1',
+      },
+      splash: {
+        backgroundColor: '#6366f1',
+        resizeMode: 'contain',
+      },
     },
     web: {
       bundler: 'metro',
