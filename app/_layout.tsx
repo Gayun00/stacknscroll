@@ -4,8 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Linking from 'expo-linking';
 import { useLinkStore } from '@/store/linkStore';
 import { fetchLinkPreview } from '@/services/linkPreview';
-import { createLink } from '@/services/firestore';
-import { getCurrentUser } from '@/services/auth';
+import { addLink as addLinkToStorage } from '@/services/storage';
 
 export default function RootLayout() {
   const { addLink } = useLinkStore();
@@ -34,16 +33,9 @@ export default function RootLayout() {
       const sharedUrl = queryParams?.url as string;
 
       if (sharedUrl) {
-        const user = getCurrentUser();
-        if (!user) {
-          console.error('User not authenticated');
-          return;
-        }
-
         // Fetch link preview and create link
         const preview = await fetchLinkPreview(sharedUrl);
-        const linkId = await createLink(user.uid, {
-          url: preview.url,
+        const newLink = await addLinkToStorage(preview.url, {
           title: preview.title,
           description: preview.description,
           imageUrl: preview.imageUrl,
@@ -51,17 +43,7 @@ export default function RootLayout() {
         });
 
         // Add to local state
-        addLink({
-          id: linkId,
-          userId: user.uid,
-          ...preview,
-          memo: null,
-          tags: [],
-          isArchived: false,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          archivedAt: null,
-        });
+        addLink(newLink);
       }
     } catch (error) {
       console.error('Error handling deep link:', error);

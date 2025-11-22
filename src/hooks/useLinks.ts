@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import { useLinkStore } from '@/store/linkStore';
-import { getUserLinks, getArchivedLinks, updateLink as updateLinkInFirestore } from '@/services/firestore';
-import { getCurrentUser } from '@/services/auth';
+import {
+  getLinks,
+  getArchivedLinks,
+  updateLink as updateLinkInStorage,
+  archiveLink as archiveLinkInStorage,
+  unarchiveLink as unarchiveLinkInStorage,
+} from '@/services/storage';
 
 export function useLinks() {
   const {
@@ -25,15 +30,10 @@ export function useLinks() {
   const loadLinks = async () => {
     try {
       setLoading(true);
-      const user = getCurrentUser();
-      if (!user) {
-        setError('User not authenticated');
-        return;
-      }
 
       const [userLinks, userArchivedLinks] = await Promise.all([
-        getUserLinks(user.uid),
-        getArchivedLinks(user.uid),
+        getLinks(),
+        getArchivedLinks(),
       ]);
 
       setLinks(userLinks);
@@ -48,7 +48,7 @@ export function useLinks() {
 
   const handleArchiveLink = async (linkId: string) => {
     try {
-      await updateLinkInFirestore(linkId, { isArchived: true });
+      await archiveLinkInStorage(linkId);
       archiveLink(linkId);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to archive link');
@@ -57,7 +57,7 @@ export function useLinks() {
 
   const handleUnarchiveLink = async (linkId: string) => {
     try {
-      await updateLinkInFirestore(linkId, { isArchived: false });
+      await unarchiveLinkInStorage(linkId);
       unarchiveLink(linkId);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to unarchive link');
@@ -66,7 +66,7 @@ export function useLinks() {
 
   const handleUpdateLink = async (linkId: string, memo: string, tags: string[]) => {
     try {
-      await updateLinkInFirestore(linkId, { memo, tags });
+      await updateLinkInStorage(linkId, { memo, tags });
       updateLink(linkId, { memo, tags });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update link');

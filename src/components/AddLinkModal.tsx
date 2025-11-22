@@ -12,8 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { fetchLinkPreview } from '@/services/linkPreview';
-import { createLink } from '@/services/firestore';
-import { getCurrentUser } from '@/services/auth';
+import { addLink } from '@/services/storage';
 
 interface AddLinkModalProps {
   visible: boolean;
@@ -40,18 +39,11 @@ export default function AddLinkModal({
       setIsLoading(true);
       setError(null);
 
-      const user = getCurrentUser();
-      if (!user) {
-        setError('로그인이 필요합니다');
-        return;
-      }
-
       // Fetch link preview
       const preview = await fetchLinkPreview(url.trim());
 
-      // Create link in Firestore
-      await createLink(user.uid, {
-        url: preview.url,
+      // Add link to local storage
+      await addLink(preview.url, {
         title: preview.title,
         description: preview.description,
         imageUrl: preview.imageUrl,
