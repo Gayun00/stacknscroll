@@ -24,6 +24,9 @@ export default {
     scheme: 'stacknscroll',
     plugins: ['expo-router'],
     extra: {
+      eas: {
+        projectId: '3ff2f9c8-d3af-4b93-97f7-f0737f555492',
+      },
       firebaseApiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
       firebaseAuthDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
       firebaseProjectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
