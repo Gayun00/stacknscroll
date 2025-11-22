@@ -6,12 +6,9 @@ export default {
     slug: 'stacknscroll',
     version: '0.1.0',
     orientation: 'portrait',
-    icon: './assets/icon.png',
     userInterfaceStyle: 'automatic',
     splash: {
-      image: './assets/splash.png',
-      resizeMode: 'contain',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#6366f1',
     },
     assetBundlePatterns: ['**/*'],
     ios: {
@@ -19,14 +16,9 @@ export default {
       bundleIdentifier: 'com.stacknscroll.app',
     },
     android: {
-      adaptiveIcon: {
-        foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#ffffff',
-      },
       package: 'com.stacknscroll.app',
     },
     web: {
-      favicon: './assets/favicon.png',
       bundler: 'metro',
     },
     scheme: 'stacknscroll',

@@ -4,13 +4,11 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useLinks } from '@/hooks/useLinks';
-import SwipeableCard from '@/components/SwipeableCard';
 import LinkCard from '@/components/LinkCard';
 import MemoModal from '@/components/MemoModal';
 import AddLinkModal from '@/components/AddLinkModal';
@@ -22,11 +20,7 @@ export default function FeedScreen() {
   const [isMemoModalVisible, setIsMemoModalVisible] = useState(false);
   const [isAddLinkModalVisible, setIsAddLinkModalVisible] = useState(false);
 
-  const handleSwipeLeft = useCallback((linkId: string) => {
-    archiveLink(linkId);
-  }, [archiveLink]);
-
-  const handleSwipeRight = useCallback((link: Link) => {
+  const handleOpenMemo = useCallback((link: Link) => {
     setSelectedLink(link);
     setIsMemoModalVisible(true);
   }, []);
@@ -38,19 +32,16 @@ export default function FeedScreen() {
   }, [selectedLink, updateLink]);
 
   const renderItem = useCallback(({ item }: { item: Link }) => (
-    <SwipeableCard
-      onSwipeLeft={() => handleSwipeLeft(item.id)}
-      onSwipeRight={() => handleSwipeRight(item)}
-    >
+    <TouchableOpacity onPress={() => handleOpenMemo(item)}>
       <LinkCard link={item} />
-    </SwipeableCard>
-  ), [handleSwipeLeft, handleSwipeRight]);
+    </TouchableOpacity>
+  ), [handleOpenMemo]);
 
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyText}>저장된 링크가 없습니다</Text>
       <Text style={styles.emptySubtext}>
-        브라우저에서 공유하기로 링크를 저장해보세요
+        + 버튼을 눌러 링크를 추가해보세요
       </Text>
     </View>
   );
