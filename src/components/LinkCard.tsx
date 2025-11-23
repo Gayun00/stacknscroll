@@ -46,7 +46,7 @@ export default function LinkCard({ link, onPress, onMemo, onArchive, onUnarchive
         </Text>
 
         {link.description && (
-          <Text style={styles.description} numberOfLines={2}>
+          <Text style={styles.description} numberOfLines={3}>
             {link.description}
           </Text>
         )}
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 200,
-    backgroundColor: '#f0f0f0',
+    height: 220,
+    backgroundColor: '#f3f4f6',
   },
   content: {
     padding: 16,
@@ -164,9 +164,9 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: '#6b7280',
-    marginBottom: 8,
-    lineHeight: 20,
+    color: '#4b5563',
+    marginBottom: 12,
+    lineHeight: 22,
   },
   siteName: {
     fontSize: 12,

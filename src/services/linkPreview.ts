@@ -34,10 +34,15 @@ export const fetchLinkPreview = async (url: string): Promise<LinkPreview & { url
                   extractTitle(html) ||
                   domain;
 
-    const description = extractMetaTag(html, 'og:description') ||
-                        extractMetaTag(html, 'twitter:description') ||
-                        extractMetaTag(html, 'description') ||
-                        '';
+    let description = extractMetaTag(html, 'og:description') ||
+                      extractMetaTag(html, 'twitter:description') ||
+                      extractMetaTag(html, 'description') ||
+                      '';
+
+    // If no meta description, try to extract from article content
+    if (!description || description.length < 50) {
+      description = extractArticlePreview(html) || description;
+    }
 
     const imageUrl = extractMetaTag(html, 'og:image') ||
                      extractMetaTag(html, 'twitter:image') ||
@@ -103,4 +108,63 @@ function extractTitle(html: string): string {
   const titleRegex = /<title[^>]*>([^<]*)<\/title>/i;
   const match = html.match(titleRegex);
   return match ? match[1].trim() : '';
+}
+
+/**
+ * Extract article preview from HTML content
+ */
+function extractArticlePreview(html: string): string {
+  // Try to find article content in common selectors
+  const patterns = [
+    // Article tags
+    /<article[^>]*>([\s\S]*?)<\/article>/i,
+    // Main content
+    /<main[^>]*>([\s\S]*?)<\/main>/i,
+    // Common content divs
+    /<div[^>]*class="[^"]*(?:content|article|post|entry)[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+  ];
+
+  for (const pattern of patterns) {
+    const match = html.match(pattern);
+    if (match && match[1]) {
+      // Remove HTML tags
+      let text = match[1]
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[\s\S]*?<\/style>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Get first 2-3 sentences or ~150 characters
+      const sentences = text.match(/[^.!?]+[.!?]+/g);
+      if (sentences && sentences.length > 0) {
+        text = sentences.slice(0, 2).join(' ').trim();
+      }
+
+      if (text.length > 200) {
+        text = text.substring(0, 197) + '...';
+      }
+
+      if (text.length > 30) {
+        return text;
+      }
+    }
+  }
+
+  // Fallback: extract first paragraph
+  const pMatch = html.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+  if (pMatch && pMatch[1]) {
+    let text = pMatch[1]
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (text.length > 200) {
+      text = text.substring(0, 197) + '...';
+    }
+
+    return text.length > 30 ? text : '';
+  }
+
+  return '';
 }
